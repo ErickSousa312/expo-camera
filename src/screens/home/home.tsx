@@ -18,6 +18,7 @@ import SVGGallery from "@/components/svgs/iconGallery";
 import SVGIconCamera from "@/components/svgs/iconCamera";
 import SVGCaptu from "@/components/svgs/IconCaptu";
 import Gallery from "@/app/class/gallery";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const Tab = createBottomTabNavigator();
 
@@ -92,10 +93,11 @@ export default function HomeScreen() {
               style={styles.button}
               onPress={toggleCameraFacing}
             >
-              <Text style={styles.text}>Flip</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={takePhoto}>
-              <Text style={styles.text}>Capture</Text>
+              <MaterialIcons
+                name="flip-camera-android"
+                size={40}
+                color="white"
+              />
             </TouchableOpacity>
           </View>
         </CameraView>
@@ -205,7 +207,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   buttonContainer: {
-    flex: 1,
+    position: "absolute",
+
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "flex-end",
@@ -213,8 +216,9 @@ const styles = StyleSheet.create({
     marginBottom: 110,
   },
   button: {
-    backgroundColor: "black",
+    // backgroundColor: "black",
     padding: 10,
+    margin: 10,
     borderRadius: 5,
   },
   text: {

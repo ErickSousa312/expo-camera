@@ -38,7 +38,7 @@ export default function Gallery({ images, setImages }: PropsImage) {
 
   function deleteSelectedImages() {
     setImages(images.filter((img) => !selectedImages.includes(img)));
-    setSelectedImages([]); // Reset seleção
+    setSelectedImages([]);
   }
 
   const handleImagePress = (uri: string) => {
