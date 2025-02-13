@@ -1,5 +1,5 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -15,12 +15,18 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { FontAwesome } from "@expo/vector-icons";
 import SVGGallery from "@/components/svgs/iconGallery";
+import SVGIconCamera from "@/components/svgs/iconCamera";
+import SVGCaptu from "@/components/svgs/IconCaptu";
+import Gallery from "@/app/class/gallery";
 
 const Tab = createBottomTabNavigator();
 
 export default function HomeScreen() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
+  const [openGallery, setOpenGallery] = useState(false);
+  const [images, setImages] = useState<string[]>([]);
+  const cameraRef = useRef<CameraView>(null);
 
   if (!permission) return <View />;
   if (!permission.granted)
@@ -34,53 +40,97 @@ export default function HomeScreen() {
   function toggleCameraFacing() {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
-
   async function takePhoto() {
-    // Implementação da captura da foto
+    if (!cameraRef.current) return;
+
+    try {
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: 0.5,
+        base64: true,
+      });
+
+      setImages([...(images ?? []), photo!.uri]);
+    } catch (error) {
+      console.error("Erro ao capturar a foto:", error);
+    }
+  }
+  async function pickImage() {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert("Permissão para acessar a biblioteca de mídia é necessária.");
+      return;
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images", "videos"],
+      allowsEditing: true,
+      // aspect: [9, 16],
+      quality: 0.3,
+      base64: true,
+    });
+
+    if (!result.canceled && result.assets?.length) {
+      console.log(result?.assets[0].uri);
+      setImages([...(images ?? []), result.assets[0].uri]);
+      setOpenGallery(true);
+    }
+  }
+
+  function deleteImage(uri: any) {
+    setImages(images?.filter((img) => img !== uri));
   }
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-            <Text style={styles.text}>Flip</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={takePhoto}>
-            <Text style={styles.text}>Capture</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.tab}>
-          <View style={styles.tabItem}>
-            <View style={styles.tabButton}>
-              <View style={styles.tabButtonInner}>
-                <SVGGallery></SVGGallery>
-              </View>
-              <Text style={styles.tabButtonText}>Galeria</Text>
-            </View>
-            <View style={styles.tabButton}>
-              <View style={styles.tabButtonInner}>
-                <FontAwesome
-                  name="photo"
-                  size={25}
-                  color={"black"}
-                ></FontAwesome>
-              </View>
-              <Text style={styles.tabButtonText}>Galeria</Text>
-            </View>
-            <View style={styles.tabButton}>
-              <TouchableOpacity style={styles.tabButtonInner}>
-                <FontAwesome
-                  name="photo"
-                  size={25}
-                  color={"black"}
-                ></FontAwesome>
-              </TouchableOpacity>
-              <Text style={styles.tabButtonText}>Capturas</Text>
-            </View>
+      {openGallery ? (
+        <Gallery images={images} setImages={setImages}></Gallery>
+      ) : (
+        <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={toggleCameraFacing}
+            >
+              <Text style={styles.text}>Flip</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={takePhoto}>
+              <Text style={styles.text}>Capture</Text>
+            </TouchableOpacity>
+          </View>
+        </CameraView>
+      )}
+      {/* // ----------------------------------- TAB -------------------------------------------------------------- */}
+      <View style={styles.tab}>
+        <View style={styles.tabItem}>
+          <View style={styles.tabButton}>
+            <TouchableOpacity style={styles.tabButtonInner} onPress={pickImage}>
+              <SVGGallery></SVGGallery>
+            </TouchableOpacity>
+            <Text style={styles.tabButtonText}>Galeria</Text>
+          </View>
+          <View style={styles.tabButton}>
+            <TouchableOpacity
+              style={styles.tabButtonInnerCamera}
+              onPress={() => {
+                setOpenGallery(false);
+                if (!openGallery) takePhoto();
+              }}
+            >
+              <SVGIconCamera></SVGIconCamera>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.tabButton}>
+            <TouchableOpacity
+              style={styles.tabButtonInner}
+              onPress={() => setOpenGallery(true)}
+            >
+              <SVGCaptu></SVGCaptu>
+            </TouchableOpacity>
+            <Text style={styles.tabButtonText}>Capturas</Text>
           </View>
         </View>
-      </CameraView>
+      </View>
     </View>
   );
 }
@@ -94,11 +144,13 @@ const styles = StyleSheet.create({
   tab: {
     width: "100%",
     height: 110,
-    borderTopRightRadius: 50,
-    borderTopLeftRadius: 50,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+    position: "absolute",
+    bottom: 0,
   },
   tabItem: {
     width: "80%",
@@ -108,8 +160,8 @@ const styles = StyleSheet.create({
   },
   tabButtonText: {
     textAlign: "center",
-    marginTop: 2,
-    fontSize: 15,
+    marginTop: 4,
+    fontSize: 14,
     color: "#E14848",
   },
   tabButton: {
@@ -118,11 +170,29 @@ const styles = StyleSheet.create({
   tabButtonInner: {
     overflow: "hidden",
     width: 50,
+
     height: 50,
     backgroundColor: "white",
     borderRadius: 15,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 105, height: 100 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  tabButtonInnerCamera: {
+    overflow: "hidden",
+    paddingLeft: 1,
+    width: 60,
+    height: 60,
+    marginBottom: 10,
+    marginLeft: 15,
+    backgroundColor: "white",
+    borderRadius: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 4, height: 5 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
@@ -140,6 +210,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "flex-end",
     paddingBottom: 20,
+    marginBottom: 110,
   },
   button: {
     backgroundColor: "black",
