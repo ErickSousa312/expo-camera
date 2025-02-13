@@ -1,14 +1,14 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Stack, usePathname } from "expo-router";
+import { Stack, Tabs, usePathname } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
+import Feather from "@expo/vector-icons/Feather";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ThemeProviderStyled } from "@/contexts/Theme/ThemeProvider";
 import { ToastProvider } from "@/contexts/Toast/ToastContext";
-
+import { Ionicons } from "@expo/vector-icons";
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -58,21 +58,49 @@ function RootLayoutNav() {
           <Stack
             screenOptions={{
               headerShown: false,
-              animationTypeForReplace: "push",
+              // animationTypeForReplace: "push",
             }}
             initialRouteName={"index"}
           >
             <Stack.Screen
+              name="class/galleryUser"
+              // options={{
+              //   title: "Sua Galeria",
+              //   tabBarIcon: ({ color, size, focused }) => (
+              //     <FontAwesome
+              //       name="photo"
+              //       size={size}
+              //       color={focused == true ? "#3e9677" : "black"}
+              //     ></FontAwesome>
+              //   ),
+              // }}
+            />
+            <Stack.Screen
               name="index"
-              options={{ animation: "slide_from_left" }}
+              // options={{
+              //   title: "Câmera",
+              //   tabBarIcon: ({ color, size, focused }) => (
+              //     <Feather
+              //       name="camera"
+              //       size={size}
+              //       color={focused == true ? "#3e9677" : "black"}
+              //     ></Feather>
+              //   ),
+              // }}
+              // options={{ animation: "slide_from_left" }}
             />
             <Stack.Screen
-              name="class/editClass"
-              options={{ animation: "slide_from_right" }}
-            />
-            <Stack.Screen
-              name="class/createClass"
-              options={{ animation: "slide_from_right" }}
+              name="class/gallery"
+              // options={{
+              //   title: "Galeria local",
+              //   tabBarIcon: ({ color, size, focused }) => (
+              //     <FontAwesome
+              //       name="photo"
+              //       size={size}
+              //       color={focused == true ? "#3e9677" : "black"}
+              //     ></FontAwesome>
+              //   ),
+              // }}
             />
           </Stack>
         </GestureHandlerRootView>

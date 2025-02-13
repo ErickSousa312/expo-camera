@@ -39,7 +39,7 @@ export default [
 
       parserOptions: {
         project: "tsconfig.json",
-        tsconfigRootDir: "C:\\Users\\erik-pc\\Documents\\GitHub\\dolar-atv",
+        tsconfigRootDir: "./",
       },
     },
 
