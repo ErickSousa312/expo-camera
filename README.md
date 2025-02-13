@@ -1,25 +1,27 @@
+## 📹 Vídeo do Projeto
 
-# Atividade mobile
-
-fotos das telas do projeto:
-
-![./assets/images/screenshots/Imagem%20do%20WhatsApp%20de%202024-12-05%20à(s)%2019.03.33_c3810292.jpg.png](https://github.com/ErickSousa312/dolar-atv/blob/main/assets/images/screenshots/Imagem%20do%20WhatsApp%20de%202024-12-05%20%C3%A0(s)%2019.03.33_c3810292.jpg?raw=true)
-![alt text](https://github.com/ErickSousa312/dolar-atv/blob/main/assets/images/screenshots/Imagem%20do%20WhatsApp%20de%202024-12-05%20%C3%A0(s)%2019.03.47_a0e48690.jpg?raw=true)
-
-![alt text](https://github.com/ErickSousa312/dolar-atv/blob/main/assets/images/screenshots/Imagem%20do%20WhatsApp%20de%202024-12-05%20%C3%A0(s)%2019.04.04_0e48163e.jpg?raw=true)
+Para demonstrar o funcionamento do projeto, foi gravado um vídeo que está localizado na pasta:  
+**`src/assets/videos`**.
 
 ---
 
-## Funcionalidades
+## 📦 Como Instalar
 
-- [x] Funcionalidade 1: **Descrição** (Ex.: Vizualizar cotação de moedas)
+Siga os passos abaixo para configurar e iniciar o projeto:
 
----
-
-## Como Instalar
-
-1. Clone o repositório:
+1. **Clone o repositório**:
    ```bash
    git clone https://github.com/seu-usuario/seu-repositorio.git
-   npm i 
+   ```
+
+2. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
+
+3. **Inicie o projeto**:
+   ```bash
    npx expo start
+   ```
+
+---
